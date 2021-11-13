@@ -1,0 +1,33 @@
+{
+  "name": "@cssfn/css-var",
+  "version": "1.0.0",
+  "description": "Reads/Writes CSS variables (CSS custom properties) in javascript property.",
+  "main": "dist/css-var.js",
+  "types": "dist/css-var.d.ts",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cssfn/css-var.git"
+  },
+  "keywords": [
+    "css",
+    "stylesheet",
+    "variables",
+    "property",
+    "javascript",
+    "object",
+    "typescript"
+  ],
+  "author": "heymarco",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cssfn/css-var/issues"
+  },
+  "homepage": "https://github.com/cssfn/css-var#readme",
+  "dependencies": {
+    "@cssfn/css-types": "^1.0.1",
+    "@cssfn/types": "^1.0.2"
+  }
+}
