@@ -10,14 +10,18 @@ export interface CssVarOptions {
      * The prefix name of the generated css vars.
      */
     prefix?: string;
-}
-export interface CssVarSettings extends CssVarOptions {
     /**
-     * The prefix name of the generated css vars.
+     * Compress the original name.
      */
-    prefix: string;
+    minify: boolean;
+}
+export interface CssVarSettings extends Required<CssVarOptions> {
 }
 export declare type CssVar<TProps extends {}> = readonly [ReadonlyRefs<TProps>, ReadonlyDecls<TProps>, CssVarSettings];
+export declare const config: {
+    defaultPrefix: string;
+    defaultMinify: boolean;
+};
 /**
  * Declares & retrieves *css variables* (css custom properties).
  */

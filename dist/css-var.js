@@ -1,8 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fallbacks = exports.default = exports.createCssVar = void 0;
-// defaults:
-const _defaultPrefix = 'fn';
+exports.fallbacks = exports.default = exports.createCssVar = exports.config = void 0;
+// configs:
+exports.config = {
+    defaultPrefix: '',
+    defaultMinify: true,
+};
 // global proxy's handlers:
 const unusedObj = {};
 const settingsHandler = {
@@ -12,7 +15,8 @@ const settingsHandler = {
         // apply the default value (if any):
         newValue = newValue ?? (() => {
             switch (propName) {
-                case 'prefix': return _defaultPrefix;
+                case 'prefix': return exports.config.defaultPrefix;
+                case 'minify': return exports.config.defaultMinify;
                 default: return newValue;
             } // switch
         })();
@@ -28,6 +32,7 @@ const settingsHandler = {
 const setReadonlyHandler = (obj, propName, newValue) => {
     throw new Error(`Setter \`${propName}\` is not supported.`);
 };
+let globalIdCounter = 0;
 /**
  * Declares & retrieves *css variables* (css custom properties).
  */
@@ -35,16 +40,23 @@ const createCssVar = (options) => {
     // settings:
     const settings = {
         ...options,
-        prefix: (options?.prefix ?? _defaultPrefix),
+        prefix: (options?.prefix ?? exports.config.defaultPrefix),
+        minify: (options?.minify ?? exports.config.defaultMinify),
     };
     // data generates:
+    const idMap = {};
     /**
      * Gets the *declaration name* of the specified `propName`, eg: `--my-favColor`.
      * @param propName The prop name to retrieve.
      * @returns A `Cust.Decl` represents the declaration name of the specified `propName`.
      */
     const decl = (propName) => {
-        return settings.prefix ? `--${settings.prefix}-${propName}` : `--${propName}`; // add double dash with prefix `--prefix-` or double dash without prefix `--`
+        let id = idMap[propName];
+        if (id === undefined) {
+            idMap[propName] = id = (++globalIdCounter);
+        } // if
+        const name = settings.minify ? 'v' : `${propName}-`;
+        return settings.prefix ? `--${settings.prefix}-${name}${id}` : `--${name}${id}`; // add double dash with prefix `--prefix-` or double dash without prefix `--`
     };
     /**
      * Gets the *value* (reference) of the specified `propName`, not the *direct* value, eg: `var(--my-favColor)`.

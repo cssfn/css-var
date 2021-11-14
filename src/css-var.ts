@@ -16,19 +16,23 @@ export interface CssVarOptions {
      * The prefix name of the generated css vars.
      */
     prefix? : string
-}
-export interface CssVarSettings extends CssVarOptions {
+    
     /**
-     * The prefix name of the generated css vars.
+     * Compress the original name.
      */
-    prefix  : string
+    minify  : boolean
+}
+export interface CssVarSettings extends Required<CssVarOptions> {
 }
 export type CssVar<TProps extends {}> = readonly [ReadonlyRefs<TProps>, ReadonlyDecls<TProps>, CssVarSettings]
 
 
 
-// defaults:
-const _defaultPrefix = 'fn';
+// configs:
+export const config = {
+    defaultPrefix : '',
+    defaultMinify : true,
+};
 
 
 
@@ -43,7 +47,8 @@ const settingsHandler: ProxyHandler<CssVarSettings> = {
         // apply the default value (if any):
         newValue = newValue ?? ((): any => {
             switch (propName) {
-                case 'prefix' : return _defaultPrefix;
+                case 'prefix' : return config.defaultPrefix;
+                case 'minify' : return config.defaultMinify;
                 default       : return newValue;
             } // switch
         })();
@@ -67,6 +72,10 @@ const setReadonlyHandler = (obj: any, propName: string, newValue: any): boolean 
 
 
 
+let globalIdCounter = 0;
+
+
+
 /**
  * Declares & retrieves *css variables* (css custom properties).
  */
@@ -75,7 +84,8 @@ const createCssVar = <TProps extends {}>(options?: CssVarOptions): CssVar<TProps
     const settings: CssVarSettings = {
         ...options,
 
-        prefix  : (options?.prefix ?? _defaultPrefix),
+        prefix : (options?.prefix ?? config.defaultPrefix),
+        minify : (options?.minify ?? config.defaultMinify),
     };
 
 
@@ -83,13 +93,22 @@ const createCssVar = <TProps extends {}>(options?: CssVarOptions): CssVar<TProps
     
     // data generates:
 
+    const idMap : Dictionary<number> = {};
+
     /**
      * Gets the *declaration name* of the specified `propName`, eg: `--my-favColor`.
      * @param propName The prop name to retrieve.
      * @returns A `Cust.Decl` represents the declaration name of the specified `propName`.
      */
     const decl = (propName: string): Cust.Decl => {
-        return settings.prefix ? `--${settings.prefix}-${propName}` : `--${propName}`; // add double dash with prefix `--prefix-` or double dash without prefix `--`
+        let id = idMap[propName];
+        if (id === undefined) {
+            idMap[propName] = id = (++globalIdCounter);
+        } // if
+        
+        const name = settings.minify ? 'v' : `${propName}-`;
+        
+        return settings.prefix ? `--${settings.prefix}-${name}${id}` : `--${name}${id}`; // add double dash with prefix `--prefix-` or double dash without prefix `--`
     }
 
     /**
