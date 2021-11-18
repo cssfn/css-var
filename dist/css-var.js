@@ -1,8 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-exports.fallbacks = exports.default = exports.createCssVar = exports.config = void 0;
 // configs:
-exports.config = {
+export const config = {
     defaultPrefix: '',
     defaultMinify: true,
 };
@@ -15,8 +12,8 @@ const settingsHandler = {
         // apply the default value (if any):
         newValue = newValue ?? (() => {
             switch (propName) {
-                case 'prefix': return exports.config.defaultPrefix;
-                case 'minify': return exports.config.defaultMinify;
+                case 'prefix': return config.defaultPrefix;
+                case 'minify': return config.defaultMinify;
                 default: return newValue;
             } // switch
         })();
@@ -40,8 +37,8 @@ const createCssVar = (options) => {
     // settings:
     const settings = {
         ...options,
-        prefix: (options?.prefix ?? exports.config.defaultPrefix),
-        minify: (options?.minify ?? exports.config.defaultMinify),
+        prefix: (options?.prefix ?? config.defaultPrefix),
+        minify: (options?.minify ?? config.defaultMinify),
     };
     // data generates:
     const idMap = {};
@@ -80,10 +77,9 @@ const createCssVar = (options) => {
         new Proxy(settings, settingsHandler),
     ];
 };
-exports.createCssVar = createCssVar;
-exports.default = createCssVar;
+export { createCssVar, createCssVar as default };
 // utilities:
-const fallbacks = (first, ...next) => {
+export const fallbacks = (first, ...next) => {
     if (!next || !next.length)
         return first;
     const refs = [first, ...next];
@@ -101,4 +97,3 @@ const fallbacks = (first, ...next) => {
         +
             (new Array(/*arrayLength: */ totalClosingCount)).fill(')').join(''));
 };
-exports.fallbacks = fallbacks;
