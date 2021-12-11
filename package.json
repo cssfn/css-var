@@ -1,6 +1,6 @@
 {
   "name": "@cssfn/css-var",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Reads/Writes CSS variables (CSS custom properties) in javascript property.",
   "type": "module",
   "main": "dist/css-var.js",

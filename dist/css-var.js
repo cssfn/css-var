@@ -48,12 +48,18 @@ const createCssVar = (options) => {
      * @returns A `Cust.Decl` represents the declaration name of the specified `propName`.
      */
     const decl = (propName) => {
-        let id = idMap[propName];
-        if (id === undefined) {
-            idMap[propName] = id = (++globalIdCounter);
-        } // if
-        const name = settings.minify ? 'v' : `${propName}-`;
-        return settings.prefix ? `--${settings.prefix}-${name}${id}` : `--${name}${id}`; // add double dash with prefix `--prefix-` or double dash without prefix `--`
+        const name = (settings.minify
+            ?
+                `v${(() => {
+                    let id = idMap[propName];
+                    if (id === undefined) {
+                        idMap[propName] = id = (++globalIdCounter);
+                    } // if
+                    return id;
+                })()}`
+            :
+                propName);
+        return settings.prefix ? `--${settings.prefix}-${name}` : `--${name}`; // add double dash with prefix `--prefix-` or double dash without prefix `--`
     };
     /**
      * Gets the *value* (reference) of the specified `propName`, not the *direct* value, eg: `var(--my-favColor)`.
