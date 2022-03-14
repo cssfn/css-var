@@ -94,7 +94,7 @@ export const fallbacks = (first, ...next) => {
         .map((ref, index) => {
         const closingCount = (ref.match(/\)+$/)?.[0]?.length ?? 0);
         totalClosingCount += closingCount;
-        return (ref.substr(0, ref.length - closingCount)
+        return (ref.slice(0, -closingCount)
             +
                 ((index < (refs.length - 1)) ? ',' : '') // add a comma except the last one
         );

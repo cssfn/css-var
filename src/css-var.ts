@@ -165,7 +165,7 @@ export const fallbacks = (first: Cust.Ref, ...next: Cust.Ref[]): Cust.Ref => {
             totalClosingCount += closingCount;
 
             return (
-                ref.substr(0, ref.length - closingCount)
+                ref.slice(0, - closingCount)
                 +
                 ((index < (refs.length - 1)) ? ',' : '') // add a comma except the last one
             );
